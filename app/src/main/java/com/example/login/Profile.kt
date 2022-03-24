@@ -7,14 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
+import com.example.login.viewmodel.MainViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class Profile : AppCompatActivity() {
+
+    //MVVM
+    val mainViewModel: MainViewModel by viewModels()
+
     var txtFullName: TextView? = null
     var txtEmail: TextView? = null
     var txtPhone: TextView? = null
