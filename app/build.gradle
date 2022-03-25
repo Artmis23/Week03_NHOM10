@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.kapt'
+
 }
 
 android {
@@ -30,10 +31,12 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-
-    dataBinding {
-        enabled = true
+    buildFeatures{
+        dataBinding {
+            enabled = true
+        }
     }
+
 }
 
 dependencies {
