@@ -9,7 +9,9 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
+import com.example.login.databinding.ActivityProfileBinding
 import com.example.login.viewmodel.MainViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -20,26 +22,13 @@ class Profile : AppCompatActivity() {
 
     //MVVM
     val mainViewModel: MainViewModel by viewModels()
-
-    var txtFullName: TextView? = null
-    var txtEmail: TextView? = null
-    var txtPhone: TextView? = null
-
-    val errorMessage = MutableLiveData<String>()
-    val loading = MutableLiveData<Boolean>()
-
-    val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        onError("Exception handled: ${throwable.localizedMessage}")
-    }
+    lateinit var dataBinding: ActivityProfileBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
-        val text: TextView = findViewById(R.id.txtEmail) as TextView
-        var data = intent.getStringExtra("Data")
-        text.setText(data)
+        dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_profile)
 
-        initView()
+        dialogProfile()
         getDataFromSignUp();
     }
 
@@ -49,111 +38,98 @@ class Profile : AppCompatActivity() {
         val fullNameBundle = bundle2?.getString("name")
         val emailBundle = bundle2?.getString("email")
 
-        txtFullName?.setText(fullNameBundle)
-        txtEmail?.setText(emailBundle)
-
+        dataBinding.txtFullName?.setText(fullNameBundle)
+        dataBinding.txtEmail?.setText(emailBundle)
 
     }
 
-    private fun initView() {
-        txtFullName = findViewById(R.id.txtFullName)
-        txtEmail = findViewById(R.id.txtEmail)
-        txtPhone = findViewById(R.id.txtPhone)
+    private fun dialogProfile() {
 
-        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            txtFullName?.setOnClickListener(View.OnClickListener { view ->
-                val builder = AlertDialog.Builder(this@Profile)
-                val viewGroup = findViewById<ViewGroup>(android.R.id.content)
+        dataBinding.txtFullName?.setOnClickListener(View.OnClickListener { view ->
+            val builder = AlertDialog.Builder(this@Profile)
+            val viewGroup = findViewById<ViewGroup>(android.R.id.content)
 
-                val dialogView =
-                    LayoutInflater.from(view.context)
-                        .inflate(R.layout.dialog_signup_fullname, viewGroup, false)
-                builder.setView(dialogView)
-                val alertDialog = builder.create()
-                alertDialog.show()
+            val dialogView =
+                LayoutInflater.from(view.context)
+                    .inflate(R.layout.dialog_signup_fullname, viewGroup, false)
+            builder.setView(dialogView)
+            val alertDialog = builder.create()
+            alertDialog.show()
 
-                val edtDialogFullName = alertDialog.findViewById<EditText>(R.id.edtDialogFullName)
-                val txtDialogCancelFullName =
-                    alertDialog.findViewById<TextView>(R.id.txtDialogCancelFullName)
-                val btnDialogEnterFullName =
-                    alertDialog.findViewById<TextView>(R.id.btnDialogEnterFullName)
+            val edtDialogFullName = alertDialog.findViewById<EditText>(R.id.edtDialogFullName)
+            val txtDialogCancelFullName =
+                alertDialog.findViewById<TextView>(R.id.txtDialogCancelFullName)
+            val btnDialogEnterFullName =
+                alertDialog.findViewById<TextView>(R.id.btnDialogEnterFullName)
 
-                txtDialogCancelFullName.setOnClickListener {
-                    alertDialog.dismiss()
-                }
+            txtDialogCancelFullName.setOnClickListener {
+                alertDialog.dismiss()
+            }
 
-                btnDialogEnterFullName.setOnClickListener {
-                    val fullName: String = edtDialogFullName.getText().toString().trim { it <= ' ' }
-                    txtFullName?.setText(fullName)
-                    alertDialog.cancel()
-                }
-            })
-        }
+            btnDialogEnterFullName.setOnClickListener {
+                val fullName: String = edtDialogFullName.getText().toString().trim { it <= ' ' }
+                dataBinding.txtFullName?.setText(fullName)
+                alertDialog.cancel()
+            }
+        })
 
-        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            txtEmail?.setOnClickListener(View.OnClickListener { view ->
-                val builder = AlertDialog.Builder(this@Profile)
-                val viewGroup = findViewById<ViewGroup>(android.R.id.content)
 
-                val dialogView =
-                    LayoutInflater.from(view.context)
-                        .inflate(R.layout.dialog_signup_email, viewGroup, false)
-                builder.setView(dialogView)
-                val alertDialog = builder.create()
-                alertDialog.show()
 
-                val edtDialogEmail = alertDialog.findViewById<EditText>(R.id.edtDialogEmail)
-                val txtDialogCancelEmail =
-                    alertDialog.findViewById<TextView>(R.id.txtDialogCancelEmail)
-                val btnDialogEnterEmail =
-                    alertDialog.findViewById<TextView>(R.id.btnDialogEnterEmail)
+        dataBinding.txtEmail?.setOnClickListener(View.OnClickListener { view ->
+            val builder = AlertDialog.Builder(this@Profile)
+            val viewGroup = findViewById<ViewGroup>(android.R.id.content)
 
-                txtDialogCancelEmail.setOnClickListener {
-                    alertDialog.dismiss()
-                }
+            val dialogView =
+                LayoutInflater.from(view.context)
+                    .inflate(R.layout.dialog_signup_email, viewGroup, false)
+            builder.setView(dialogView)
+            val alertDialog = builder.create()
+            alertDialog.show()
 
-                btnDialogEnterEmail.setOnClickListener {
-                    val email: String = edtDialogEmail.getText().toString().trim { it <= ' ' }
-                    txtEmail?.setText(email)
-                    alertDialog.cancel()
-                }
-            })
-        }
+            val edtDialogEmail = alertDialog.findViewById<EditText>(R.id.edtDialogEmail)
+            val txtDialogCancelEmail =
+                alertDialog.findViewById<TextView>(R.id.txtDialogCancelEmail)
+            val btnDialogEnterEmail =
+                alertDialog.findViewById<TextView>(R.id.btnDialogEnterEmail)
 
-        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            txtPhone?.setOnClickListener(View.OnClickListener { view ->
-                val builder = AlertDialog.Builder(this@Profile)
-                val viewGroup = findViewById<ViewGroup>(android.R.id.content)
+            txtDialogCancelEmail.setOnClickListener {
+                alertDialog.dismiss()
+            }
 
-                val dialogView =
-                    LayoutInflater.from(view.context)
-                        .inflate(R.layout.dialog_signup_password, viewGroup, false)
-                builder.setView(dialogView)
-                val alertDialog = builder.create()
-                alertDialog.show()
+            btnDialogEnterEmail.setOnClickListener {
+                val email: String = edtDialogEmail.getText().toString().trim { it <= ' ' }
+                dataBinding.txtEmail?.setText(email)
+                alertDialog.cancel()
+            }
+        })
 
-                val edtDialogPassword = alertDialog.findViewById<EditText>(R.id.edtDialogPassword)
-                val txtDialogCancelPassword =
-                    alertDialog.findViewById<TextView>(R.id.txtDialogCancelPassword)
-                val btnDialogEnterPassword =
-                    alertDialog.findViewById<TextView>(R.id.btnDialogEnterPassword)
 
-                txtDialogCancelPassword.setOnClickListener {
-                    alertDialog.dismiss()
-                }
+        dataBinding.txtPhone?.setOnClickListener(View.OnClickListener { view ->
+            val builder = AlertDialog.Builder(this@Profile)
+            val viewGroup = findViewById<ViewGroup>(android.R.id.content)
 
-                btnDialogEnterPassword.setOnClickListener {
-                    val password: String = edtDialogPassword.getText().toString().trim { it <= ' ' }
-                    txtPhone?.setText(password)
-                    alertDialog.cancel()
-                }
-            })
-        }
-    }
+            val dialogView =
+                LayoutInflater.from(view.context)
+                    .inflate(R.layout.dialog_signup_password, viewGroup, false)
+            builder.setView(dialogView)
+            val alertDialog = builder.create()
+            alertDialog.show()
 
-    private fun onError(message: String) {
-        errorMessage.value = message
-        loading.value = false
+            val edtDialogPassword = alertDialog.findViewById<EditText>(R.id.edtDialogPassword)
+            val txtDialogCancelPassword =
+                alertDialog.findViewById<TextView>(R.id.txtDialogCancelPassword)
+            val btnDialogEnterPassword =
+                alertDialog.findViewById<TextView>(R.id.btnDialogEnterPassword)
 
+            txtDialogCancelPassword.setOnClickListener {
+                alertDialog.dismiss()
+            }
+
+            btnDialogEnterPassword.setOnClickListener {
+                val password: String = edtDialogPassword.getText().toString().trim { it <= ' ' }
+                dataBinding.txtPhone?.setText(password)
+                alertDialog.cancel()
+            }
+        })
     }
 }

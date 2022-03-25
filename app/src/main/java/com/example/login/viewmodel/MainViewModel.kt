@@ -1,5 +1,6 @@
 package com.example.login.viewmodel
 
+import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import kotlinx.coroutines.*
 class Resp(val isSuccess: Boolean, val error: Error?)
 class MainViewModel : ViewModel() {
 
+    val mData = MutableLiveData<DataStore>()
 
 
     private var _isSuccessEvent: MutableLiveData<Boolean> = MutableLiveData()
@@ -26,6 +28,9 @@ class MainViewModel : ViewModel() {
         job?.cancel()
     }
 
+    fun abc() {
+
+    }
     fun registerUser(email: String, passWord: String, fullName: String) {
         val isValidEmail = isEmailValid(email)
         if (!isValidEmail) {
@@ -66,7 +71,8 @@ class MainViewModel : ViewModel() {
 
 
     private fun isEmailValid(emailFun: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(emailFun).matches()
+        return !TextUtils.isEmpty(emailFun) &&
+                android.util.Patterns.EMAIL_ADDRESS.matcher(emailFun).matches()
     }
 
     private fun isPasswordValid(passWordFun: String): Boolean {
@@ -74,7 +80,7 @@ class MainViewModel : ViewModel() {
     }
 
     private fun isFullnameValid(fullNameFun: String): Boolean {
-        return fullNameFun.length in 1..30
+        return !TextUtils.isEmpty(fullNameFun)
     }
 
 }
