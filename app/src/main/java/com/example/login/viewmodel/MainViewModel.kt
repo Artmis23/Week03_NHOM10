@@ -46,7 +46,7 @@ class MainViewModel : ViewModel() {
 
         val isFullnameValid = isFullnameValid(fullName)
         if (!isFullnameValid) {
-            _isErrorEvent.postValue("Full name không hợp lệ")
+            _isErrorEvent.postValue("Fullname không hợp lệ")
             return
         }
 
